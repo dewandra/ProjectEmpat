@@ -11,12 +11,16 @@
       integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
       crossorigin="anonymous"
     />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+    />
     <style>
       * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
       body {
         background-image: url(img/awan.jpg);
       }
@@ -29,6 +33,13 @@
         -webkit-backdrop-filter: blur(5px);
         border: 1px solid rgba(169, 163, 240, 0.568);
       }
+      #map {
+        height: 70vh;
+        width: 100%;
+      }
+      .leaflet-popup-content-wrapper {
+        width: 100%;
+      }
     </style>
   </head>
   <body>
@@ -36,7 +47,12 @@
       <div class="row mt-5">
         <div class="col-md-6 text-center">
           <h1>Ramalan Cuaca</h1>
-          <img src="img/cuaca.png" class="img-fluid rounded-start image" alt="..."> 
+          <div id="map"></div>
+          <img
+            src="img/cuaca.png"
+            class="img-fluid rounded-start image"
+            alt="..."
+          />
         </div>
         <div class="col-md-6">
           <form action="" class="">
@@ -71,14 +87,29 @@
       integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
       crossorigin="anonymous"
     ></script>
+
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+
     <script>
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } else {
+        console.log("Geolocation is not supported by this browser.");
+      }
+      function showPosition(position) {
+        let lat = position.coords.latitude;
+        let long = position.coords.longitude;
+        generateWeatherByLatLong(lat, long);
+        generateMap(lat, long);
+      }
+
       const input = document.getElementById("input");
       const searchBtn = document.getElementById("search");
       searchBtn.addEventListener("click", function () {
         fetch(
           "https://api.openweathermap.org/data/2.5/weather?q=" +
             input.value +
-            "&appid=9ba1428be93cc53800879fcc6b642b6f"
+            "&units=metric&appid=9ba1428be93cc53800879fcc6b642b6f"
         )
           .then((response) => response.json())
           .then((data) => {
@@ -95,14 +126,94 @@
             document.getElementById(
               "icon"
             ).src = `http://openweathermap.org/img/w/${icon}.png`;
-            document.getElementById("temp").innerText = `Temperatur : ${temp}`;
-            document.getElementById("hum").innerText = `Humidity : ${humidity}%`;
+            document.getElementById(
+              "temp"
+            ).innerHTML = `Temperatur : ${temp}<sup>o</sup> C`;
+            document.getElementById(
+              "hum"
+            ).innerText = `Humidity : ${humidity}%`;
             document.getElementById("ws").innerText = `Wind Speed : ${speed}`;
             document.getElementById("cl").innerText = `Clouds : ${all}%`;
-            document.getElementById("pre").innerText = `Pressure : ${pressure}mb`;
+            document.getElementById(
+              "pre"
+            ).innerText = `Pressure : ${pressure}mb`;
           })
           .catch((err) => alert("wrong!"));
       });
+
+      function generateWeatherByLatLong(lat, long) {
+        fetch(
+          "https://api.openweathermap.org/data/2.5/weather?lat=" +
+            lat +
+            "&lon=" +
+            long +
+            "&units=metric&appid=9ba1428be93cc53800879fcc6b642b6f"
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            const { name } = data;
+            const { description, icon } = data.weather[0];
+            const { temp, humidity, pressure } = data.main;
+            const { speed } = data.wind;
+            const { all } = data.clouds;
+
+            document.getElementById("city").innerText = `Weather in ${name}`;
+            document.getElementById(
+              "desc"
+            ).innerText = `Condition : ${description}`;
+            document.getElementById(
+              "icon"
+            ).src = `http://openweathermap.org/img/w/${icon}.png`;
+            document.getElementById(
+              "temp"
+            ).innerHTML = `Temperatur : ${temp}<sup>o</sup> C`;
+            document.getElementById(
+              "hum"
+            ).innerText = `Humidity : ${humidity}%`;
+            document.getElementById("ws").innerText = `Wind Speed : ${speed}`;
+            document.getElementById("cl").innerText = `Clouds : ${all}%`;
+            document.getElementById(
+              "pre"
+            ).innerText = `Pressure : ${pressure}mb`;
+          })
+          .catch((err) => alert("wrong!"));
+      }
+
+      function generateMap(lat, long) {
+        // Initialize the map and assign it to a variable for later use
+        // there's a few ways to declare a VARIABLE in javascript.
+        // you might also see people declaring variables using `const` and `let`
+        var map = L.map("map", {
+          // Set latitude and longitude of the map center (required)
+          center: [lat, long],
+          // Set the initial zoom level, values 0-18, where 0 is most zoomed-out (required)
+          zoom: 11,
+        });
+
+        // Create a Tile Layer and add it to the map
+        var tiles = new L.tileLayer(
+          "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          {
+            attribution:
+              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            minZoom: "8",
+          }
+        ).addTo(map);
+
+        var marker = L.marker([lat, long], {
+          draggable: true,
+          title: "",
+          opacity: 0.75,
+        });
+
+        marker.addTo(map);
+
+        marker.on("dragend", function (e) {
+          let lat = e.target._latlng.lat;
+          let long = e.target._latlng.lng;
+          generateWeatherByLatLong(lat, long);
+        });
+      }
     </script>
   </body>
 </html>
