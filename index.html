@@ -11,12 +11,32 @@
       integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
       crossorigin="anonymous"
     />
+    <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+      body {
+        background-image: url(img/awan.jpg);
+      }
+      .card {
+        margin-top: 30px;
+        background: rgba(51, 38, 198, 0.24);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(5px);
+        border: 1px solid rgba(169, 163, 240, 0.568);
+      }
+    </style>
   </head>
   <body>
-    <div class="container">
+    <div class="container card">
       <div class="row mt-5">
         <div class="col-md-6 text-center">
           <h1>Ramalan Cuaca</h1>
+          <img src="img/cuaca.png" class="img-fluid rounded-start image" alt="..."> 
         </div>
         <div class="col-md-6">
           <form action="" class="">
@@ -37,7 +57,10 @@
             <img src="" alt="" id="icon" class="mx-auto d-block" />
             <p class="text-center fw-bolder fs-6" id="desc"></p>
             <p class="text-center fw-bolder fs-6" id="temp"></p>
+            <p class="text-center fw-bolder fs-6" id="hum"></p>
             <p class="text-center fw-bolder fs-6" id="ws"></p>
+            <p class="text-center fw-bolder fs-6" id="cl"></p>
+            <p class="text-center fw-bolder fs-6" id="pre"></p>
           </form>
         </div>
       </div>
@@ -61,8 +84,9 @@
           .then((data) => {
             const { name } = data;
             const { description, icon } = data.weather[0];
-            const { temp } = data.main;
+            const { temp, humidity, pressure } = data.main;
             const { speed } = data.wind;
+            const { all } = data.clouds;
 
             document.getElementById("city").innerText = `Weather in ${name}`;
             document.getElementById(
@@ -72,7 +96,10 @@
               "icon"
             ).src = `http://openweathermap.org/img/w/${icon}.png`;
             document.getElementById("temp").innerText = `Temperatur : ${temp}`;
+            document.getElementById("hum").innerText = `Humidity : ${humidity}%`;
             document.getElementById("ws").innerText = `Wind Speed : ${speed}`;
+            document.getElementById("cl").innerText = `Clouds : ${all}%`;
+            document.getElementById("pre").innerText = `Pressure : ${pressure}mb`;
           })
           .catch((err) => alert("wrong!"));
       });
