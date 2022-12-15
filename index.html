@@ -22,20 +22,24 @@
         box-sizing: border-box;
       }
       body {
-        background-image: url(img/awan.jpg);
+        background: rgb(245, 159, 191);
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(5px);
       }
       .card {
         margin-top: 30px;
-        background: rgba(51, 38, 198, 0.24);
+        background: linear-gradient(270deg, #f7ab74 0%, #f3618d 100%);
         border-radius: 16px;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(7px);
-        -webkit-backdrop-filter: blur(5px);
-        border: 1px solid rgba(169, 163, 240, 0.568);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(145, 143, 167, 0.568);
+  
       }
       #map {
-        height: 70vh;
+        margin-top: 46px;
+        height: 60vh;
         width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
       }
       .leaflet-popup-content-wrapper {
         width: 100%;
@@ -45,16 +49,15 @@
   <body>
     <div class="container card">
       <div class="row mt-5">
-        <div class="col-md-6 text-center">
+        <div class="col-md-4 text-center">
           <h1>Ramalan Cuaca</h1>
-          <div id="map"></div>
           <img
             src="img/cuaca.png"
             class="img-fluid rounded-start image"
             alt="..."
           />
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <form action="" class="">
             <div class="input-group mb-3">
               <input
@@ -78,6 +81,10 @@
             <p class="text-center fw-bolder fs-6" id="cl"></p>
             <p class="text-center fw-bolder fs-6" id="pre"></p>
           </form>
+        </div>
+        <div class="col-md-4 text-center">
+          <h3>Map</h3>
+            <div id="map"></div>
         </div>
       </div>
     </div>
@@ -132,7 +139,7 @@
             document.getElementById(
               "hum"
             ).innerText = `Humidity : ${humidity}%`;
-            document.getElementById("ws").innerText = `Wind Speed : ${speed}`;
+            document.getElementById("ws").innerText = `Wind Speed : ${speed}km/j`;
             document.getElementById("cl").innerText = `Clouds : ${all}%`;
             document.getElementById(
               "pre"
@@ -170,7 +177,7 @@
             document.getElementById(
               "hum"
             ).innerText = `Humidity : ${humidity}%`;
-            document.getElementById("ws").innerText = `Wind Speed : ${speed}`;
+            document.getElementById("ws").innerText = `Wind Speed : ${speed}km/j`;
             document.getElementById("cl").innerText = `Clouds : ${all}%`;
             document.getElementById(
               "pre"
