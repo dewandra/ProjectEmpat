@@ -32,7 +32,6 @@
         border-radius: 16px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         border: 1px solid rgba(145, 143, 167, 0.568);
-  
       }
       #map {
         margin-top: 46px;
@@ -47,6 +46,13 @@
     </style>
   </head>
   <body>
+    <div
+      class="alert alert-danger text-center"
+      role="alert"
+      style="display: none"
+    >
+      city doesn't exist
+    </div>
     <div class="container card">
       <div class="row mt-5">
         <div class="col-md-4 text-center">
@@ -84,7 +90,7 @@
         </div>
         <div class="col-md-4 text-center">
           <h3>Map</h3>
-            <div id="map"></div>
+          <div id="map"></div>
         </div>
       </div>
     </div>
@@ -135,17 +141,19 @@
             ).src = `http://openweathermap.org/img/w/${icon}.png`;
             document.getElementById(
               "temp"
-            ).innerHTML = `Temperatur : ${temp}<sup>o</sup> C`;
+            ).innerHTML = `Temperatur : ${temp}<sup>o</sup>c`;
             document.getElementById(
               "hum"
             ).innerText = `Humidity : ${humidity}%`;
-            document.getElementById("ws").innerText = `Wind Speed : ${speed}km/j`;
+            document.getElementById(
+              "ws"
+            ).innerText = `Wind Speed : ${speed}km/j`;
             document.getElementById("cl").innerText = `Clouds : ${all}%`;
             document.getElementById(
               "pre"
             ).innerText = `Pressure : ${pressure}mb`;
           })
-          .catch((err) => alert("wrong!"));
+          .catch((err) => alert(`city doesn't exist!`));
       });
 
       function generateWeatherByLatLong(lat, long) {
@@ -177,13 +185,15 @@
             document.getElementById(
               "hum"
             ).innerText = `Humidity : ${humidity}%`;
-            document.getElementById("ws").innerText = `Wind Speed : ${speed}km/j`;
+            document.getElementById(
+              "ws"
+            ).innerText = `Wind Speed : ${speed}km/j`;
             document.getElementById("cl").innerText = `Clouds : ${all}%`;
             document.getElementById(
               "pre"
             ).innerText = `Pressure : ${pressure}mb`;
           })
-          .catch((err) => alert("wrong!"));
+          .catch((err) => alert(`city doesn't exist!`));
       }
 
       function generateMap(lat, long) {
